@@ -5,6 +5,7 @@ import adeo.leroymerlin.cdp.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -50,7 +51,7 @@ public class EventService {
                     .map(existing -> mapper(existing, event)).orElseThrow(() -> new EntityNotFoundException(
                             "Event with id " + id + "was not found")));
             logger.debug("successfully changes for event with id {}", id);
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             logger.warn("failed to save changes for event with id {}, raison: {}", id, e.getMessage());
         }
     }
