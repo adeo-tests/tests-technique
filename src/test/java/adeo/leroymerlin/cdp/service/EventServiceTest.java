@@ -105,7 +105,13 @@ class EventServiceTest {
         Event event = new Event();
         event.setComment(expectedComment);
         event.setNbStars(1);
-        when(eventRepository.findOne(any())).thenReturn(event);
+
+        String oldComment = "Old comment";
+        Event oldState = new Event();
+        oldState.setComment(oldComment);
+        oldState.setNbStars(1);
+
+        when(eventRepository.findOne(any())).thenReturn(oldState);
         //WHEN
         Event updated = eventService.update(1L, event).get();
         //THEN

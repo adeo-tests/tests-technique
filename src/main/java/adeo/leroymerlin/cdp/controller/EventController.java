@@ -27,8 +27,8 @@ public class EventController {
     }
 
     @RequestMapping(value = "/search/{query}", method = RequestMethod.GET)
-    public List<Event> findEvents(@PathVariable String query) {
-        return eventService.getFilteredEvents(query);
+    public ResponseEntity<List<Event>> findEvents(@PathVariable String query) {
+        return ResponseEntity.ok(eventService.getFilteredEvents(query));
     }
 
 
@@ -38,13 +38,13 @@ public class EventController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity updateEvent(@PathVariable Long id, @RequestBody Event event) {
+    public ResponseEntity<Void> updateEvent(@PathVariable Long id, @RequestBody Event event) {
 
         Optional<Event> updated = eventService.update(id, event);
         if (!updated.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(updated.get());
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }
