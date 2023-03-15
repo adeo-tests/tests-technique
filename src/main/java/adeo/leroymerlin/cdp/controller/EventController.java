@@ -3,9 +3,12 @@ package adeo.leroymerlin.cdp.controller;
 import adeo.leroymerlin.cdp.entity.Event;
 import adeo.leroymerlin.cdp.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/events")
@@ -35,7 +38,13 @@ public class EventController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public void updateEvent(@PathVariable Long id, @RequestBody Event event) {
-        eventService.update(id, event);
+    public ResponseEntity updateEvent(@PathVariable Long id, @RequestBody Event event) {
+
+        Optional<Event> updated = eventService.update(id, event);
+        if (!updated.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(updated.get());
     }
 }

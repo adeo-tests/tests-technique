@@ -9,7 +9,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.rmi.NotBoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -45,14 +44,16 @@ public class EventService {
     }
 
 
-    public void update(Long id, Event event) {
+    public Optional<Event> update(Long id, Event event) {
         try {
             eventRepository.save(Optional.ofNullable(eventRepository.findOne(id))
                     .map(existing -> mapper(existing, event)).orElseThrow(() -> new EntityNotFoundException(
-                            "Event with id " + id + "was not found")));
+                            "Event with id [" + id + "] was not found")));
             logger.debug("successfully changes for event with id {}", id);
+            return Optional.of(event);
         } catch (DataAccessException e) {
-            logger.warn("failed to save changes for event with id {}, raison: {}", id, e.getMessage());
+            logger.error("failed to save changes for event with id {}, raison: {}", id, e.getMessage());
+            return Optional.empty();
         }
     }
 
